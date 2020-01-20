@@ -1,0 +1,11 @@
+name: BedWarsExtended
+version: 1.0
+main: src.me.streafe.BedWarsExtended.BWExtended
+author: Streafe
+description: BedWars
+
+commands:
+  bedwars:
+    default: op
+    aliases: [bw]
+    usage: /<command> args

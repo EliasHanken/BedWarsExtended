@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="BedWarsExtended">
+    <output-path>$USER_HOME$/Documents/bungee-hub/plugins</output-path>
+    <root id="archive" name="BedWarsExtended.jar">
+      <element id="module-output" name="BedWarsExtended" />
+    </root>
+  </artifact>
+</component>
