@@ -46,4 +46,8 @@ public class Arena {
     public boolean isAvailable() {
         return isAvailable;
     }
+
+    public void setAvailable(Boolean bool){
+        this.isAvailable = bool;
+    }
 }

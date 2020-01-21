@@ -38,5 +38,16 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/MEGAsync Downloads/Development/Buildtools/spigot-1.8.8.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/MEGAsync Downloads/Development/Buildtools/spigot-1.8.8.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>
