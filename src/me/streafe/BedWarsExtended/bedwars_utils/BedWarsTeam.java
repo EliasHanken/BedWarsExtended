@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.scoreboard.Team;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,24 +12,34 @@ public class BedWarsTeam {
 
     private boolean isAlive = true;
     private TeamColor teamColor;
-    private List<UUID> teamPLayers;
+    private List<UUID> teamPlayers;
     private Location spawnLocation;
+    private Location bedLocation;
 
     public BedWarsTeam(TeamColor teamColor){
         this.teamColor = teamColor;
+        this.teamPlayers = new ArrayList<>();
     }
 
 
+    public void setBedLocation(Location location){
+        this.bedLocation = location;
+    }
+
+    public Location getBedLocation(){
+        return this.bedLocation;
+    }
+
     public List<UUID> getTeamPLayers() {
-        return teamPLayers;
+        return teamPlayers;
     }
 
     public void addPlayerToTeam(UUID uuid) {
-        this.teamPLayers.add(uuid);
+        this.teamPlayers.add(uuid);
     }
 
     public void removePlayerFromTeam(UUID uuid){
-        this.teamPLayers.remove(uuid);
+        this.teamPlayers.remove(uuid);
     }
 
     public boolean isAlive() {
@@ -46,4 +57,5 @@ public class BedWarsTeam {
     public void setSpawnLocation(Location spawnLocation) {
         this.spawnLocation = spawnLocation;
     }
+
 }

@@ -2,6 +2,7 @@ package src.me.streafe.BedWarsExtended.server_utils;
 
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class Utils_1_9_R1 implements UtilsWrapper{
@@ -15,4 +16,16 @@ public class Utils_1_9_R1 implements UtilsWrapper{
     public String translate(String text){
         return ChatColor.translateAlternateColorCodes('&',text);
     }
+
+    @Override
+    public String saveLoc(Location loc) {
+        return null;
+    }
+
+    @Override
+    public Location getLocation(String string) {
+        return null;
+    }
+
+
 }
