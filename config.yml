@@ -1,2 +1,4 @@
 system:
   prefix: '&7[&cBedWars&7] '
+bedwars:
+  lobbyWorld: 'world'

@@ -1,6 +1,7 @@
 package src.me.streafe.BedWarsExtended.arenas;
 
 import org.apache.commons.io.FileUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.util.FileUtil;
@@ -57,6 +58,15 @@ public class Arena {
         return teamList;
     }
 
+    public BedWarsTeam getTeam(String name){
+        for(Map.Entry<String, BedWarsTeam> entry : getTeamListMap().entrySet()){
+            if(entry.getValue().getTeamColor().getName() == TeamColor.valueOf(name).getName()){
+                return entry.getValue();
+            }
+        }
+        return null;
+    }
+
     public boolean teamExists(String name){
         if(teamList.get(name) != null){
             return true;
@@ -68,6 +78,26 @@ public class Arena {
         if(teamList.get(name)== null){
             teamList.put(name,new BedWarsTeam(teamColor));
             getTeamListMap().get(name).setSpawnLocation(spawnLocation);
+        }
+    }
+
+    public void removeAllPlayersFromGame(){
+        for(Map.Entry<UUID, BedWarsTeam> entry : getPlayersList().entrySet()){
+            getPlayersList().remove(entry.getKey());
+            Bukkit.getPlayer(entry.getKey()).sendMessage(BWExtended.getInstance().getUtils().translate(BWExtended.getInstance().getPrefix() + "&cYou were removed from the arena &a" + getName()));
+        }
+    }
+
+    public void removePlayerFromGame(UUID uuid){
+        for(Map.Entry<String, BedWarsTeam> entry : getTeamListMap().entrySet()){
+            entry.getValue().removePlayerFromTeam(uuid);
+        }
+    }
+
+    public void removeAllPlayersFromAllTeams(){
+        for(Map.Entry<String, BedWarsTeam> entry : getTeamListMap().entrySet()){
+            entry.getValue().removeAllPlayersFromTeam();
+            Bukkit.getPlayer(entry.getKey()).sendMessage(BWExtended.getInstance().getUtils().translate(BWExtended.getInstance().getPrefix() + "&cYou were removed from the team " + entry.getValue().getTeamColor().getPrefix()));
         }
     }
 
@@ -99,9 +129,7 @@ public class Arena {
     public void deleteArenaFile(){
         File file = new File(BWExtended.getInstance().getDataFolder() + "/arenas/",getName() + ".yml");
         if(file.exists()){
-
             file.delete();
-
         }
     }
 
@@ -110,8 +138,13 @@ public class Arena {
         return bedLocationList;
     }
 
-    public void setBedLocationList(Map<BedWarsTeam, Location> bedLocationList) {
-        this.bedLocationList = bedLocationList;
+    public void setBedLocation(BedWarsTeam team, Location location) {
+        try{
+            getBedLocationList().remove(team);
+            getBedLocationList().put(team,location);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public boolean isAvailable() {

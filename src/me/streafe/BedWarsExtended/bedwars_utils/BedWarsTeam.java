@@ -21,6 +21,11 @@ public class BedWarsTeam {
         this.teamPlayers = new ArrayList<>();
     }
 
+    public void removeAllPlayersFromTeam(){
+        for(UUID uuid : getTeamPLayers()){
+            getTeamPLayers().remove(uuid);
+        }
+    }
 
     public void setBedLocation(Location location){
         this.bedLocation = location;
@@ -46,7 +51,7 @@ public class BedWarsTeam {
         return isAlive;
     }
 
-    public TeamColor getWoolColor() {
+    public TeamColor getTeamColor() {
         return teamColor;
     }
 

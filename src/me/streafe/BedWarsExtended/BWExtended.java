@@ -56,6 +56,7 @@ public class BWExtended extends JavaPlugin {
         arenaWorldManager = new ArenaWorldManager();
 
 
+
         try{
             worldEditPlugin = (WorldEditPlugin) getServer().getPluginManager().getPlugin("WorldEdit");
         }catch (Exception e){
