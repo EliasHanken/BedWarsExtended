@@ -4,9 +4,11 @@ import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.util.FileUtil;
+import src.me.streafe.BedWarsExtended.BWExtended;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 public class ArenaWorldManager {
 
@@ -38,4 +40,16 @@ public class ArenaWorldManager {
             e.printStackTrace();
         }
     }
+
+    public void loadCustomWorlds(){
+        for(Map.Entry<String,Arena> entry : BWExtended.getInstance().getArenaManager().getAllArenas().entrySet()){
+            try{
+                WorldCreator wc = new WorldCreator(entry.getValue().getName());
+                wc.createWorld();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
 }

@@ -8,7 +8,7 @@ public enum TeamColor {
     RED("RED","&c&lRED &r"),
     BLUE("BLUE","&b&lBLUE &r"),
     YELLOW("YELLOW","&e&lYELLOW &r"),
-    WHITE("WHITE","&f&lWHITE &r");
+    GREEN("GREEN","&a&lGREEN &r");
 
     private String name;
     private String prefix;

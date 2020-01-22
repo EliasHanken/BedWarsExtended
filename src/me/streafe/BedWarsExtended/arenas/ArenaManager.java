@@ -54,11 +54,14 @@ public class ArenaManager {
             for(File f : files){
                 YamlConfiguration yaml = YamlConfiguration.loadConfiguration(f);
                 BWExtended.getInstance().getArenaManager().createArena(yaml.getString("name"));
+                BWExtended.getInstance().getArenaManager().getArena(yaml.getString("name")).setLobbyLocation(BWExtended.getInstance().getUtils().getLocation(yaml.getString("lobbyLocation")));
 
                 Arena a = BWExtended.getInstance().getArenaManager().getArena(yaml.getString("name"));
-                for(Map.Entry<String,BedWarsTeam> entry : a.getTeamListMap().entrySet()){
-                    a.addNewTeam(entry.getKey(),TeamColor.valueOf("teams." +entry.getKey()),BWExtended.getInstance().getUtils().getLocation("teams."+entry.getKey() +".spawnLocation"));
+
+                for(String keys : yaml.getConfigurationSection("teams").getKeys(false)){
+                    a.addNewTeam(keys,TeamColor.valueOf(keys),BWExtended.getInstance().getUtils().getLocation(yaml.getString("teams." + keys + ".spawnLocation")));
                 }
+
             }
         }catch (Exception e){
             e.printStackTrace();

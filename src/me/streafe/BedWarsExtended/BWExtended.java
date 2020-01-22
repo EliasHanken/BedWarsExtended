@@ -53,7 +53,10 @@ public class BWExtended extends JavaPlugin {
         getCommand("bedwars").setExecutor(new BedWarsCommand());
 
         arenaManager = new ArenaManager();
+        arenaManager.loadArenas();
+
         arenaWorldManager = new ArenaWorldManager();
+        arenaWorldManager.loadCustomWorlds();
 
 
 
@@ -64,7 +67,7 @@ public class BWExtended extends JavaPlugin {
         }
 
         //LOAD ARENAS
-        arenaManager.loadArenas();
+
 
     }
 

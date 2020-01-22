@@ -19,6 +19,7 @@ public class Arena {
     private Map<UUID, BedWarsTeam> playersList;
     private Map<BedWarsTeam, Location> bedLocationList;
     private Map<String, BedWarsTeam> teamList;
+    private Location lobbyLocation;
     private boolean isAvailable = false;
 
     public Arena(String name){
@@ -26,10 +27,13 @@ public class Arena {
         this.name = name;
         this.playersList = new HashMap<>();
         this.bedLocationList = new HashMap<>();
+        this.lobbyLocation = null;
     }
 
     public boolean hasEverythingSet(){
         if(!(getTeamListMap().size() > 1)){
+            return false;
+        }else if(lobbyLocation == null){
             return false;
         }
         return true;
@@ -38,6 +42,8 @@ public class Arena {
     public String sendMissing(){
         if(!(getTeamListMap().size() > 1)){
             return "Missing teams, create at least 2";
+        }else if(lobbyLocation == null){
+            return "Missing lobby location";
         }
         return null;
     }
@@ -50,8 +56,39 @@ public class Arena {
         this.name = name;
     }
 
-    public void addNewPlayer(UUID uuid, BedWarsTeam bedWarsTeam) {
-        getPlayersList().put(uuid, bedWarsTeam);
+    public void addNewPlayer(UUID uuid) {
+        getPlayersList().put(uuid, null);
+    }
+
+    public void addPlayerToTeam(UUID uuid, BedWarsTeam team){
+        if(getPlayersList().containsKey(uuid)){
+            getPlayersList().put(uuid,team);
+            if(!getPlayersList().get(uuid).getTeamPLayers().contains(uuid)){
+                getPlayersList().get(uuid).addPlayerToTeam(uuid);
+                Bukkit.getPlayer(uuid).sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate("Joined team " + getPlayersList().get(uuid).getTeamColor().getPrefix()
+                        + " in arena &a" + getName()));
+            }else{
+                Bukkit.getPlayer(uuid).sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate("&cAlready in team "+getPlayersList().get(uuid).getTeamColor().getPrefix()));
+            }
+
+        }else{
+            Bukkit.getPlayer(uuid).sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate("&cNot in game!"));
+        }
+
+    }
+
+    public void removePlayerFromTeam(UUID uuid){
+        try{
+            getPlayersList().get(uuid).removePlayerFromTeam(uuid);
+            Bukkit.getPlayer(uuid).sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate("&cRemoved from team " + getPlayersList()
+            .get(uuid).getTeamColor().getPrefix()));
+        }catch (Exception e){
+            Bukkit.getPlayer(uuid).sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate("&cNot in a team!"));
+        }
+
+
+
+
     }
 
     public Map<String,BedWarsTeam> getTeamListMap(){
@@ -60,7 +97,7 @@ public class Arena {
 
     public BedWarsTeam getTeam(String name){
         for(Map.Entry<String, BedWarsTeam> entry : getTeamListMap().entrySet()){
-            if(entry.getValue().getTeamColor().getName() == TeamColor.valueOf(name).getName()){
+            if(entry.getKey().equalsIgnoreCase(name)){
                 return entry.getValue();
             }
         }
@@ -115,6 +152,7 @@ public class Arena {
             }
             YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(file);
             yamlConfiguration.set("name",getName());
+            yamlConfiguration.set("lobbyLocation",BWExtended.getInstance().getUtils().saveLoc(lobbyLocation));
             for(Map.Entry<String,BedWarsTeam> entry : teamList.entrySet()){
                 yamlConfiguration.set("teams."+entry.getKey().toUpperCase() + ".spawnLocation",BWExtended.getInstance().getUtils().saveLoc(entry.getValue().getSpawnLocation()));
             }
@@ -164,5 +202,29 @@ public class Arena {
             return true;
         }
         return false;
+    }
+
+    public boolean playerAlreadyInTeam(UUID uuid){
+        for(Map.Entry<String, BedWarsTeam> entry : teamList.entrySet()){
+            if(entry.getValue().getTeamPLayers().contains(uuid)) return true;
+        }
+        return false;
+    }
+
+    public BedWarsTeam getTeamFromPlayer(UUID uuid){
+        for(Map.Entry<UUID,BedWarsTeam> entry : getPlayersList().entrySet()){
+            if(entry.getKey() == uuid){
+                return entry.getValue();
+            }
+        }
+        return null;
+    }
+
+    public Location getLobbyLocation() {
+        return lobbyLocation;
+    }
+
+    public void setLobbyLocation(Location lobbyLocation) {
+        this.lobbyLocation = lobbyLocation;
     }
 }

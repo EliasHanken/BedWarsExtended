@@ -25,6 +25,24 @@ public class BedWarsCommand implements CommandExecutor {
                 if(args.length == 0){
                     player.sendMessage(BWExtended.getInstance().getUtils().translate("&c/bw <args>..."));
                     return true;
+                }else if(args.length == 1 && args[0].equalsIgnoreCase("help")){
+                    player.sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate("&7---&eArena List&7---"));
+                    player.sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate("&e/bw create &7<&aarenaName&7>"));
+                    player.sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate("&e/bw createNewTeam &7<&ateamName&7> <&aarenaName&7> &7(sets your loc to team spawn loc)"));
+                    player.sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate("&e/bw list &7(gets the list of all arenas)"));
+                    player.sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate("&e/bw saveArena &7<&aarenaName&7> &7(saves arena to files so it can load on restart)"));
+                    player.sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate("&e/bw sql saveArena &7<&aarenaName&7> &7(saving arena to SQL)"));
+                    player.sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate("&e/bw worldManager create &7<&aworldName&7>"));
+                    player.sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate("&e/bw worldManager tp &7<&aworldName&7>"));
+                    player.sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate("&e/bw worldManager delete &7<&aworldName&7>"));
+
+                }else if(args.length == 2 && args[0].equalsIgnoreCase("setLobby")){
+                    if(BWExtended.getInstance().getArenaManager().arenaExists(args[1])){
+                        BWExtended.getInstance().getArenaManager().getArena(args[1]).setLobbyLocation(player.getLocation());
+                        player.sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate("&7Set lobby location for &a" + args[1]));
+                    }else{
+                        player.sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate("&cThat arena doesn't exist"));
+                    }
                 }else if(args.length == 2 && args[0].equalsIgnoreCase("create") && args[1] != null){
                     if(!BWExtended.getInstance().getArenaManager().arenaExists(args[1])){
                         BWExtended.getInstance().getArenaManager().createArena(args[1]);
@@ -83,6 +101,7 @@ public class BedWarsCommand implements CommandExecutor {
                     if(BWExtended.getInstance().getArenaManager().arenaExists(args[1])){
                         if(BWExtended.getInstance().getArenaManager().getArena(args[1]).hasEverythingSet()){
                             BWExtended.getInstance().getArenaManager().getArena(args[1]).saveArena();
+                            player.sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate("&7Saved &a" + args[1] + " &7to files"));
                         }else{
                             player.sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getArenaManager().getArena(args[1]).sendMissing());
                         }
@@ -105,25 +124,55 @@ public class BedWarsCommand implements CommandExecutor {
                         BWExtended.getInstance().getArenaWorldManager().deleteWorld(args[2]);
                         player.sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate("&cdeleted world &a" + args[2]));
                     }
-                }else if(args.length == 3 && args[0].equalsIgnoreCase("join")){
+                }else if(args.length == 2 && args[0].equalsIgnoreCase("join")){
                     if(BWExtended.getInstance().getArenaManager().arenaExists(args[1])){
                         if(!BWExtended.getInstance().getArenaManager().getArena(args[1]).playerAlreadyInGame(player.getUniqueId())){
                             try{
-                                BWExtended.getInstance().getArenaManager().getArena(args[1]).addNewPlayer(player.getUniqueId(),BWExtended.getInstance().getArenaManager().getArena(args[1]).getTeam(args[2]));
+                                BWExtended.getInstance().getArenaManager().getArena(args[1]).addNewPlayer(player.getUniqueId());
+                                player.sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate("&7You joined &a" + args[1]));
+                                return true;
                             }catch (Exception e){
                                 player.sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate("&cThat is not a valid team!"));
                             }
-                            player.sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate("&7You joined &a" + args[1]));
                         }else{
                             player.sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate("&cYou are already in a game"));
                         }
                     }
-                }else if(args.length == 2 && args[0].equalsIgnoreCase("teamList")){
-                    StringBuilder teams = new StringBuilder();
-                    for(Map.Entry<String,BedWarsTeam> entry : BWExtended.getInstance().getArenaManager().getArena(args[1]).getTeamListMap().entrySet()){
-                        teams.append(entry.getKey());
+                }else if(args.length == 3 && args[0].equalsIgnoreCase("joinTeam")){
+                    if(BWExtended.getInstance().getArenaManager().arenaExists(args[2])){
+                        if(!BWExtended.getInstance().getArenaManager().getArena(args[2]).playerAlreadyInTeam(player.getUniqueId())){
+                            BWExtended.getInstance().getArenaManager().getArena(args[2]).addPlayerToTeam(player.getUniqueId(),BWExtended.getInstance().getArenaManager().getArena(args[2])
+                                    .getTeam(args[1]));
+                            return true;
+                        }else{
+                            player.sendMessage("Already in team");
+                            return true;
+                        }
+
                     }
-                    player.sendMessage(teams.toString());
+                    /*
+                    if(!BWExtended.getInstance().getArenaManager().getArena(args[2]).playerAlreadyInTeam(player.getUniqueId())){
+                        BWExtended.getInstance().getArenaManager().getArena(args[2]).addPlayerToTeam(player.getUniqueId(),BWExtended.getInstance().getArenaManager().getArena(args[2]).getTeam(args[1]));
+                        player.sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate("You joined the team " + TeamColor.valueOf(args[1].toUpperCase()).getPrefix()));
+                    }else{
+                        player.sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate("&cYou are already in team " + BWExtended.getInstance().getArenaManager()
+                        .getArena(args[2]).getTeamFromPlayer(player.getUniqueId())));
+                    }
+
+                     */
+                }else if(args.length == 2 && args[0].equalsIgnoreCase("leaveTeam")){
+                    if(BWExtended.getInstance().getArenaManager().arenaExists(args[1])){
+                        if(BWExtended.getInstance().getArenaManager().getArena(args[1]).playerAlreadyInTeam(player.getUniqueId())){
+                            BWExtended.getInstance().getArenaManager().getArena(args[1]).removePlayerFromTeam(player.getUniqueId());
+                        }
+                    }
+                }else if(args.length == 2 && args[0].equalsIgnoreCase("teamList")){
+                    String teams = "";
+                    for(Map.Entry<String,BedWarsTeam> entry : BWExtended.getInstance().getArenaManager().getArena(args[1]).getTeamListMap().entrySet()){
+                        teams += TeamColor.valueOf(entry.getKey()).getPrefix();
+                    }
+                    player.sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate("&7----&eTeam List&7----"));
+                    player.sendMessage(BWExtended.getInstance().getPrefix() + BWExtended.getInstance().getUtils().translate(teams));
                 }else{
                     try{
                         if(args[2] == null){
