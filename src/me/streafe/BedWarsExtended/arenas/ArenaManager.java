@@ -1,5 +1,6 @@
 package src.me.streafe.BedWarsExtended.arenas;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -66,6 +67,20 @@ public class ArenaManager {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public void startGame(String name){
+        for(Map.Entry<String, Arena> entry : getAllArenas().entrySet()){
+                for(Map.Entry<String, BedWarsTeam> entry1 : entry.getValue().getTeamListMap().entrySet()){
+                    if (entry1.getValue().getTeamPLayers().size() == 1 && (entry.getValue().getPlayersList().size() == 2)){
+                        Bukkit.broadcastMessage("starting game");
+                    }else if(entry1.getValue().getTeamPLayers().size() == 2){
+                        Bukkit.broadcastMessage("Switch teams, one team contains 2 players!");
+                    }
+                }
+
+        }
+
     }
 
 

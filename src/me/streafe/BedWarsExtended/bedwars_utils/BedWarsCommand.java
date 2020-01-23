@@ -143,6 +143,7 @@ public class BedWarsCommand implements CommandExecutor {
                         if(!BWExtended.getInstance().getArenaManager().getArena(args[2]).playerAlreadyInTeam(player.getUniqueId())){
                             BWExtended.getInstance().getArenaManager().getArena(args[2]).addPlayerToTeam(player.getUniqueId(),BWExtended.getInstance().getArenaManager().getArena(args[2])
                                     .getTeam(args[1]));
+                            BWExtended.getInstance().getArenaManager().startGame(args[2]);
                             return true;
                         }else{
                             player.sendMessage("Already in team");
